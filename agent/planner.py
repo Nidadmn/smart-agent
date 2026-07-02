@@ -1,58 +1,38 @@
-import re
+import json
 
 
 class Planner:
-    """
-    Decides which tool should be used based on the user's request.
-    """
+
+    def __init__(self, llm):
+        self.llm = llm
 
     def plan(self, user_input: str):
 
-        text = user_input.lower().strip()
+        prompt = f"""
+You are a planner for an AI agent.
 
-        # -------------------------
-        # Calculator
-        # -------------------------
+Choose the best tool.
 
-        expression = re.search(
-            r"[0-9]+\s*[\+\-\*/]\s*[0-9]+",
-            text
-        )
+TOOLS:
+- calculator (math operations)
+- file (read files)
+- report (create markdown report)
+- none (just chat)
 
-        if expression:
+Return ONLY JSON:
 
-            return {
-                "tool": "calculator",
-                "input": expression.group()
-            }
+{{
+  "tool": "calculator|file|report|none",
+  "input": "what to send to tool"
+}}
 
-        # -------------------------
-        # File Reader
-        # -------------------------
+USER INPUT:
+{user_input}
+"""
 
-        if text.startswith("read "):
+        response = self.llm.generate(prompt)
 
-            filename = user_input[5:].strip()
-
-            return {
-                "tool": "file",
-                "input": filename
-            }
-
-        # -------------------------
-        # Report
-        # -------------------------
-
-        if text.startswith("report "):
-
-            content = user_input[7:].strip()
-
-            return {
-                "tool": "report",
-                "input": (
-                    "Agent Report",
-                    content
-                )
-            }
-
-        return None
+        try:
+            return json.loads(response)
+        except:
+            return {"tool": "none", "input": user_input}

@@ -1,11 +1,12 @@
 class Evaluator:
-    """
-    Evaluates whether a tool execution was successful.
-    """
+    def __init__(self, llm):
+        self.llm = llm
 
-    def evaluate(self, result):
+    def evaluate(self, task, result):
+        prompt = f"""
+Task: {task}
+Result: {result}
 
-        if not isinstance(result, dict):
-            return False
-
-        return result.get("success", False)
+Is this correct? Answer YES or NO and explain briefly.
+"""
+        return self.llm.generate(prompt)

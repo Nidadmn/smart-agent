@@ -1,17 +1,16 @@
 from abc import ABC, abstractmethod
 
-
 class BaseTool(ABC):
     """
     Base class for all tools.
-    Every tool must inherit from this class.
+    Every tool must implement run().
     """
 
     name = "Base Tool"
     description = "Abstract Tool"
 
     @abstractmethod
-    def execute(self, *args, **kwargs):
+    def run(self, *args, **kwargs):
         """
         Execute the tool.
         """
