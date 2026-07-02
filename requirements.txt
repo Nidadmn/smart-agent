@@ -1,4 +1,3 @@
 smolagents
+litellm
 ollama
-rich
-python-dotenv
