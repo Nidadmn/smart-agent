@@ -8,16 +8,51 @@ class Planner:
 
     def plan(self, user_input: str):
 
-        user_input = user_input.lower().strip()
+        text = user_input.lower().strip()
 
-        # Basit matematik ifadesi kontrolü
-        if re.search(r"[0-9]+\s*[\+\-\*/]\s*[0-9]+", user_input):
+        # -------------------------
+        # Calculator
+        # -------------------------
+
+        expression = re.search(
+            r"[0-9]+\s*[\+\-\*/]\s*[0-9]+",
+            text
+        )
+
+        if expression:
+
             return {
                 "tool": "calculator",
-                "input": re.search(
-                    r"[0-9]+\s*[\+\-\*/]\s*[0-9]+",
-                    user_input
-                ).group()
+                "input": expression.group()
+            }
+
+        # -------------------------
+        # File Reader
+        # -------------------------
+
+        if text.startswith("read "):
+
+            filename = user_input[5:].strip()
+
+            return {
+                "tool": "file",
+                "input": filename
+            }
+
+        # -------------------------
+        # Report
+        # -------------------------
+
+        if text.startswith("report "):
+
+            content = user_input[7:].strip()
+
+            return {
+                "tool": "report",
+                "input": (
+                    "Agent Report",
+                    content
+                )
             }
 
         return None
