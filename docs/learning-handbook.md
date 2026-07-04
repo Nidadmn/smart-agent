@@ -387,6 +387,74 @@ routing is faster, cheaper, easier to test, and easier to debug.
 Use the LLM for ambiguity, natural language, and reasoning. Do not use it for
 everything.
 
+#### LLM Planner Cost vs Benefit
+
+A common beginner instinct is to ask the LLM to decide every step:
+
+```text
+User input
+ -> LLM planner call
+ -> LLM chat or tool call
+ -> final answer
+```
+
+This looks more "agentic", but it can be a bad tradeoff for a small project.
+
+For a simple greeting such as:
+
+```text
+hi
+```
+
+an LLM planner adds no real value. It only adds another model call before the
+actual chat response. With a local model, that means:
+
+- more latency,
+- more GPU/CPU work,
+- more opportunities for empty or malformed output,
+- more parsing logic,
+- more tests,
+- harder debugging.
+
+In this project, the better flow is:
+
+```text
+User input
+ -> deterministic planner
+ -> direct Ollama chat if no tool matches
+ -> final answer
+```
+
+This reduced a simple `hi` interaction from a slow multi-call path to a single
+fast Ollama call.
+
+The rough tradeoff for this project:
+
+```text
+LLM planner benefit: low
+LLM planner cost:    high
+```
+
+That does not mean LLM planners are always bad. They become useful when:
+
+- the tool list is large,
+- tool input schemas are complex,
+- users write very diverse natural language instructions,
+- multi-step tasks are required,
+- memory or context affects tool choice,
+- the model supports reliable structured outputs or function calling.
+
+The best long-term pattern is often hybrid:
+
+```text
+1. Try deterministic fast paths.
+2. If confidence is low, use an LLM planner.
+3. If no tool is needed, go directly to chat.
+```
+
+Do not pay the cost of an LLM planner unless the project gets real value from
+it.
+
 ### 5.3 Tool Inputs Are Untrusted
 
 Tool input may come from:

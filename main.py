@@ -13,7 +13,7 @@ def build_agent() -> Orchestrator:
         "file": FileTool(),
         "report": ReportTool(),
     }
-    planner = Planner(llm=llm, tool_names=set(tools))
+    planner = Planner(tool_names=set(tools))
     return Orchestrator(llm=llm, planner=planner, tools=tools)
 
 

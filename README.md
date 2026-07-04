@@ -50,7 +50,7 @@ the implementation talks to Ollama directly through HTTP.
 - Local Ollama integration with configurable model and base URL
 - Environment-based configuration via `.env.example`
 - Deterministic routing for common tool commands
-- LLM fallback for ambiguous planning and direct chat
+- Direct Ollama chat fallback for non-tool requests
 - Safe calculator tool for basic arithmetic
 - Workspace-limited file reader tool
 - Markdown report generator tool
@@ -147,6 +147,9 @@ The application reads runtime settings from environment variables:
 
 - `OLLAMA_BASE_URL`: Ollama server URL
 - `OLLAMA_MODEL`: local model name
+- `OLLAMA_NUM_PREDICT`: maximum tokens to generate
+- `OLLAMA_TEMPERATURE`: sampling temperature
+- `OLLAMA_THINK`: whether supported thinking models should use thinking mode
 
 For local development, copy the example file:
 
@@ -204,6 +207,11 @@ Use the agent as a minimal local chatbot backed by your configured Ollama model.
 ```
 
 This path does not call a tool. The planner routes the request to Ollama chat.
+Simple chat requests use a single Ollama call; tool routing does not ask the
+model to produce a separate plan first.
+Thinking mode is disabled by default because small local thinking models can
+spend the whole token budget on hidden reasoning before producing a user-facing
+answer.
 
 ### 2. Basic Arithmetic With a Safe Tool
 
