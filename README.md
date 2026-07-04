@@ -1,4 +1,4 @@
-# 🧠 Smart Agent (Smol Autonomous AI Agent)
+# Smart Agent (Small Autonomous AI Agent)
 
 This project is a minimal autonomous AI agent built from scratch using Python and Ollama LLM.
 
@@ -11,18 +11,18 @@ It demonstrates how an AI agent can:
 
 ---
 
-## 🚀 Features
+## Features
 
-### 🧠 LLM Integration
+### LLM Integration
 - Uses Ollama (Qwen 2.5 model)
 - Runs locally (no API key required)
 
-### 🛠 Tool System
+### Tool System
 - Calculator Tool (math operations)
 - File Reader Tool (read local files)
 - Report Generator Tool (markdown output)
 
-### 🧭 Agent Architecture
+### Agent Architecture
 - Planner (decides which tool to use)
 - Orchestrator (controls workflow)
 - Evaluator (checks correctness)
@@ -30,7 +30,7 @@ It demonstrates how an AI agent can:
 
 ---
 
-## 🔁 Workflow
+## Workflow
 
 
 ```text
@@ -66,7 +66,7 @@ Final Response
 7. The final response is returned to the user.
 ---
 
-## ▶️ Installation
+## Installation
 
 ```bash
 git clone https://github.com/Nidadmn/smart-agent.git
@@ -94,7 +94,7 @@ py test_agent.py
 
 ---
 
-## 💬 Example
+## Example
 
 ```text
 >>> 12 * 8 + 5
@@ -112,7 +112,7 @@ report.md created
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 smart-agent/
@@ -136,6 +136,6 @@ smart-agent/
 
 ---
 
-## 📜 License
+## License
 
 MIT License
