@@ -10,7 +10,12 @@ DEFAULT_OLLAMA_MODEL = "qwen3.5:4b"
 
 class OllamaLLM:
 
-    def __init__(self, model=None, base_url=None):
+    def __init__(
+        self,
+        model: str | None = None,
+        base_url: str | None = None,
+        timeout_seconds: int = 120,
+    ):
         load_dotenv(override=False)
 
         self.model = model or os.getenv("OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL)
@@ -18,8 +23,8 @@ class OllamaLLM:
             "OLLAMA_BASE_URL",
             DEFAULT_OLLAMA_BASE_URL
         )
+        self.timeout_seconds = timeout_seconds
 
-        # 🔥 KRİTİK FIX: davranış standardı
         self.system_prompt = """
 You are a helpful AI assistant.
 Always respond in Turkish unless user uses English.
@@ -27,8 +32,7 @@ Be clear, natural and concise.
 Do not say "I’m sorry" unnecessarily.
 """
 
-    def generate(self, prompt):
-
+    def generate(self, prompt: str) -> str:
         full_prompt = f"""
 {self.system_prompt}
 
@@ -42,10 +46,10 @@ USER:
                 "model": self.model,
                 "prompt": full_prompt,
                 "stream": False
-            }
+            },
+            timeout=self.timeout_seconds,
         )
+        response.raise_for_status()
 
-        if response.status_code == 200:
-            return response.json()["response"]
-        else:
-            return f"Error: {response.text}"
+        payload = response.json()
+        return str(payload.get("response", "")).strip()

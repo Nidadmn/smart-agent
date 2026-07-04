@@ -1,52 +1,45 @@
+from agent.types import AgentResult, HistoryEntry, ToolResult
+
+
 class Orchestrator:
-    def __init__(self, llm, planner, evaluator, tools):
+    def __init__(self, llm, planner, tools, history=None):
         self.llm = llm
         self.planner = planner
-        self.evaluator = evaluator
         self.tools = tools
+        self.history = history or []
 
-    def run(self, task: str):
+    def run(self, task: str) -> AgentResult:
+        plan = self.planner.plan(task)
 
-        memory = ""
-        max_steps = 5
+        if plan.tool == "none":
+            final_answer = self.llm.generate(task)
+            result = AgentResult(final_answer=final_answer, plan=plan)
+            self._add_history(task, final_answer)
+            return result
 
-        for step in range(max_steps):
+        tool = self.tools.get(plan.tool)
+        if tool is None:
+            tool_result = ToolResult(
+                success=False,
+                content=f"Tool is not registered: {plan.tool}",
+            )
+            result = AgentResult(
+                final_answer=tool_result.content,
+                plan=plan,
+                tool_result=tool_result,
+            )
+            self._add_history(task, tool_result.content)
+            return result
 
-            # 1. PLAN
-            plan = self.planner.plan(task + "\n" + memory)
+        tool_result = tool.run(plan.tool_input)
+        final_answer = tool_result.content
+        result = AgentResult(
+            final_answer=final_answer,
+            plan=plan,
+            tool_result=tool_result,
+        )
+        self._add_history(task, final_answer)
+        return result
 
-            if plan is None:
-                result = self.llm.generate(task + "\n" + memory)
-                return {
-                    "final_answer": result,
-                    "steps": memory
-                }
-
-            tool = self.tools.get(plan["tool"])
-            tool_input = plan["input"]
-
-            if tool:
-                observation = tool.execute(tool_input)
-            else:
-                observation = "Tool not found"
-
-            # 2. MEMORY UPDATE
-            memory += f"\nStep {step+1}:\nTool: {plan['tool']}\nInput: {tool_input}\nResult: {observation}\n"
-
-            # 3. EVALUATE
-            evaluation = self.evaluator.evaluate(task, observation)
-
-            # 4. STOP CONDITION
-            if "YES" in evaluation:
-                final = self.llm.generate(task + "\n\nResult: " + str(observation))
-                return {
-                    "final_answer": final,
-                    "steps": memory,
-                    "evaluation": evaluation
-                }
-
-        # fallback
-        return {
-            "final_answer": "Max steps reached",
-            "steps": memory
-        }
+    def _add_history(self, user_input: str, response: str) -> None:
+        self.history.append(HistoryEntry(user_input=user_input, response=response))
