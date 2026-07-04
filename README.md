@@ -23,6 +23,7 @@ This project was created as a post-workshop self-improvement project after the
 - [Usage](#usage)
 - [Testing](#testing)
 - [Project Structure](#project-structure)
+- [Learning Handbook](#learning-handbook)
 - [Security Notes](#security-notes)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -235,6 +236,12 @@ smart-agent/
 ├── requirements.txt
 └── test.txt
 ```
+
+## Learning Handbook
+
+This repository includes a detailed learning handbook for future development:
+
+- [Smart Agent Learning Handbook](docs/learning-handbook.md)
 
 ## Security Notes
 
