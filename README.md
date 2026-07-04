@@ -21,6 +21,7 @@ This project was created as a post-workshop self-improvement project after the
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)
 - [Usage](#usage)
+- [Example Use Cases](#example-use-cases)
 - [Testing](#testing)
 - [Project Structure](#project-structure)
 - [Learning Handbook](#learning-handbook)
@@ -188,6 +189,76 @@ Merhaba! Size nasıl yardımcı olabilirim?
 ```
 
 Type `exit` or `quit` to stop the interactive session.
+
+## Example Use Cases
+
+This project is intentionally small, so the best use cases are learning-focused
+and easy to inspect.
+
+### 1. Local Chat With an Ollama Model
+
+Use the agent as a minimal local chatbot backed by your configured Ollama model.
+
+```text
+>>> Explain what an AI agent is in one short paragraph.
+```
+
+This path does not call a tool. The planner routes the request to Ollama chat.
+
+### 2. Basic Arithmetic With a Safe Tool
+
+Use the calculator tool for simple arithmetic.
+
+```text
+>>> 12 * 8 + 5
+101
+```
+
+This path is deterministic and does not need an LLM call. It is useful for
+learning when code should be preferred over model reasoning.
+
+### 3. Reading a Local Project File
+
+Use the file tool to read files inside the project workspace.
+
+```text
+>>> read test.txt
+```
+
+The file tool is intentionally limited to the workspace root so the agent does
+not read arbitrary files from the machine.
+
+### 4. Generating a Simple Markdown Report
+
+Use the report tool to create a small markdown file.
+
+```text
+>>> report AI Agent Project
+Report created: report.md
+```
+
+This demonstrates a tool with a side effect. The generated `report.md` file is
+ignored by git.
+
+### 5. Learning Agent Architecture
+
+Use the project to study how these pieces work together:
+
+- `OllamaLLM` handles local model calls.
+- `Planner` decides whether a tool is needed.
+- `Orchestrator` connects planning, tools, and chat.
+- `ToolResult` and `AgentResult` make outputs explicit and testable.
+
+### Not Recommended Use Cases
+
+This project is not intended for:
+
+- production automation,
+- executing arbitrary code,
+- reading files outside the workspace,
+- long-running autonomous workflows,
+- multi-agent orchestration,
+- handling secrets or sensitive files.
 
 ## Testing
 
