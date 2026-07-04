@@ -38,7 +38,13 @@ cp .env.example .env
 6. Run the interactive demo:
 
 ```bash
-python3 test_agent.py
+python3 main.py
+```
+
+7. Run the unit tests:
+
+```bash
+python3 -m unittest discover -v
 ```
 
 ## Pull Request Guidelines
