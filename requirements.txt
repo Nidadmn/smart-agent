@@ -1,3 +1,2 @@
-smolagents
-litellm
-ollama
+python-dotenv
+requests

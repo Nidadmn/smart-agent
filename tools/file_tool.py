@@ -1,29 +1,38 @@
+from pathlib import Path
+
+from agent.types import ToolResult
 from tools.base_tool import BaseTool
-import os
+
 
 class FileTool(BaseTool):
 
     name = "file"
     description = "Reads a text file."
 
-    def run(self, file_path):
-        if not os.path.exists(file_path):
-            return {
-                "success": False,
-                "error": "File not found."
-            }
+    def __init__(self, root_dir: Path | str | None = None):
+        self.root_dir = Path(root_dir or ".").resolve()
 
+    def run(self, tool_input: str) -> ToolResult:
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
+            file_path = self._resolve_path(tool_input)
+            content = file_path.read_text(encoding="utf-8")
+        except (FileNotFoundError, IsADirectoryError, ValueError) as error:
+            return ToolResult(success=False, content=str(error))
+        except OSError as error:
+            return ToolResult(success=False, content=f"Could not read file: {error}")
 
-            return {
-                "success": True,
-                "content": content
-            }
+        return ToolResult(success=True, content=content, data={"file": str(file_path)})
 
-        except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+    def _resolve_path(self, tool_input: str) -> Path:
+        requested_path = (self.root_dir / tool_input.strip()).resolve()
+
+        if not requested_path.is_relative_to(self.root_dir):
+            raise ValueError("File path is outside the workspace.")
+
+        if not requested_path.exists():
+            raise FileNotFoundError("File not found.")
+
+        if requested_path.is_dir():
+            raise IsADirectoryError("Path is a directory, not a file.")
+
+        return requested_path

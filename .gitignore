@@ -2,6 +2,11 @@
 __pycache__/
 *.py[cod]
 *.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 
 # Virtual Environment
 .venv/
@@ -9,9 +14,14 @@ venv/
 
 # Environment Variables
 .env
+.env.*
+!.env.example
 
 # VS Code
 .vscode/
 
 # macOS
 .DS_Store
+
+# Generated files
+report.md
