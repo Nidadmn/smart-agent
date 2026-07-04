@@ -29,7 +29,13 @@ ollama pull qwen3.5:4b
 ollama serve
 ```
 
-5. Run the interactive demo:
+5. Create a local environment file if you want to customize Ollama settings:
+
+```bash
+cp .env.example .env
+```
+
+6. Run the interactive demo:
 
 ```bash
 python3 test_agent.py

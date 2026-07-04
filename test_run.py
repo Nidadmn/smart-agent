@@ -5,7 +5,7 @@ from agent.evaluator import Evaluator
 from tools.calculator_tool import CalculatorTool
 
 # 1. LLM
-llm = OllamaLLM(model="qwen2.5:3b")
+llm = OllamaLLM()
 
 # 2. Agent parçaları
 planner = Planner(llm)

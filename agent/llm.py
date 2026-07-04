@@ -1,11 +1,23 @@
+import os
+
 import requests
+from dotenv import load_dotenv
+
+
+DEFAULT_OLLAMA_BASE_URL = "http://localhost:11434"
+DEFAULT_OLLAMA_MODEL = "qwen3.5:4b"
 
 
 class OllamaLLM:
 
-    def __init__(self, model="qwen2.5:3b"):
-        self.model = model
-        self.base_url = "http://localhost:11434"
+    def __init__(self, model=None, base_url=None):
+        load_dotenv(override=False)
+
+        self.model = model or os.getenv("OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL)
+        self.base_url = base_url or os.getenv(
+            "OLLAMA_BASE_URL",
+            DEFAULT_OLLAMA_BASE_URL
+        )
 
         # 🔥 KRİTİK FIX: davranış standardı
         self.system_prompt = """
